@@ -1,0 +1,16 @@
+#!/bin/bash
+
+NC='\033[0m'
+BOrange='\033[48;5;202;97m'
+BRed='\033[1;97;41m'
+BGreen='\033[1;32m'
+
+
+# Laravel Pint dirty
+echo -e "${BOrange}Laravel Pint Fix${NC}"
+php ./vendor/bin/pint --dirty
+
+if grep -q "Fixed" <<< "$PINT"; then
+   echo -e "${BRed}Attention: Some files have been patched by Laravel Pint.${NC}"
+    exit 1
+fi
