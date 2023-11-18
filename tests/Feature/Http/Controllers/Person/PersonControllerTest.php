@@ -198,7 +198,7 @@ class PersonControllerTest extends TestCase
     /** @test */
     public function it_should_update_a_person(): void
     {
-        $person = Person::factory()->create([
+        $person = Person::factory()->createOne([
             'name' => 'Old Name',
         ]);
 
@@ -224,7 +224,7 @@ class PersonControllerTest extends TestCase
     /** @test */
     public function it_should_delete_a_person(): void
     {
-        $person = Person::factory()->create();
+        $person = Person::factory()->createOne();
 
         $response = $this->deleteJson(self::BASE_URL . "/{$person->id}");
 
@@ -238,13 +238,13 @@ class PersonControllerTest extends TestCase
     /** @test */
     public function it_should_force_delete_a_person(): void
     {
-        $person = Person::factory()->create();
+        $person = Person::factory()->createOne();
 
         $response = $this->deleteJson(self::BASE_URL . "/{$person->id}/force");
 
         $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseEmpty('people', [
+        $this->assertDatabaseMissing('people', [
             'id' => $person->id,
         ]);
     }
