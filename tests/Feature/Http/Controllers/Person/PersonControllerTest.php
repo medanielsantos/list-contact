@@ -166,8 +166,8 @@ class PersonControllerTest extends TestCase
         ]);
 
         $response->assertJsonFragment([
-            'id'   => $person->id,
-            'name' => $person->name,
+            'id'       => $person->id,
+            'name'     => $person->name,
             'contacts' => $person->contacts->toArray(),
         ]);
     }
