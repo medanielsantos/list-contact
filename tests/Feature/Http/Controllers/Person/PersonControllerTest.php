@@ -9,10 +9,12 @@ use Tests\TestCase;
 
 class PersonControllerTest extends TestCase
 {
+    public const BASE_URL = '/api/people';
+
     /** @test */
     public function it_should_access_endpoint()
     {
-        $response = $this->getJson('/api/people');
+        $response = $this->getJson(self::BASE_URL);
 
         $response->assertStatus(ResponseAlias::HTTP_OK);
     }
@@ -22,7 +24,7 @@ class PersonControllerTest extends TestCase
     {
         Person::factory()->count(3)->create();
 
-        $response = $this->getJson('/api/people');
+        $response = $this->getJson(self::BASE_URL);
 
         $response->assertJsonStructure([
             'data' => [
@@ -41,7 +43,7 @@ class PersonControllerTest extends TestCase
     {
         Person::factory()->has(Contact::factory()->count(3))->count(3)->create();
 
-        $response = $this->getJson('/api/people');
+        $response = $this->getJson(self::BASE_URL);
 
         $response->assertJsonStructure([
             'data' => [
@@ -72,7 +74,7 @@ class PersonControllerTest extends TestCase
     {
         Person::factory()->count(15)->create();
 
-        $response = $this->getJson('/api/people');
+        $response = $this->getJson(self::BASE_URL);
 
         $response->assertJsonStructure([
             'data' => [
@@ -109,7 +111,7 @@ class PersonControllerTest extends TestCase
 
         $this->assertCount(10, $response->json('data'));
 
-        $this->call('GET', '/api/people?page=2')->assertJsonFragment([
+        $this->call('GET', self::BASE_URL . '?page=2')->assertJsonFragment([
             'current_page' => 2,
             'from'         => 11,
             'last_page'    => 2,
@@ -124,7 +126,7 @@ class PersonControllerTest extends TestCase
     {
         $person = Person::factory()->create();
 
-        $response = $this->getJson("/api/people/{$person->id}");
+        $response = $this->getJson(self::BASE_URL . "/{$person->id}");
 
         $response->assertJsonStructure([
             'data' => [
@@ -144,7 +146,7 @@ class PersonControllerTest extends TestCase
     {
         $person = Person::factory()->has(Contact::factory()->count(3))->create();
 
-        $response = $this->getJson("/api/people/{$person->id}");
+        $response = $this->getJson(self::BASE_URL . "/{$person->id}");
 
         $response->assertJsonStructure([
             'data' => [
@@ -169,6 +171,67 @@ class PersonControllerTest extends TestCase
             'id'       => $person->id,
             'name'     => $person->name,
             'contacts' => $person->contacts->toArray(),
+        ]);
+    }
+
+    /** @test */
+    public function it_should_create_a_person()
+    {
+        $person = Person::factory()->make();
+
+        $response = $this->postJson(self::BASE_URL, $person->toArray());
+
+        $response->assertStatus(ResponseAlias::HTTP_CREATED);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'name' => $person->name,
+        ]);
+    }
+
+    /** @test */
+    public function it_should_update_a_person()
+    {
+        $person = Person::factory()->create([
+            'name' => 'Old Name',
+        ]);
+
+        $response = $this->putJson(self::BASE_URL . "/{$person->id}", [
+            'name' => 'New Name',
+        ]);
+
+        $response->assertStatus(ResponseAlias::HTTP_OK);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'id'   => $person->id,
+            'name' => 'New Name',
+        ]);
+    }
+
+    /** @test */
+    public function it_should_delete_a_person()
+    {
+        $person = Person::factory()->create();
+
+        $response = $this->deleteJson(self::BASE_URL . "/{$person->id}");
+
+        $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
+
+        $this->assertSoftDeleted('people', [
+            'id' => $person->id,
         ]);
     }
 
