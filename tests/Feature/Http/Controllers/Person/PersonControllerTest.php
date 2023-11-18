@@ -115,7 +115,7 @@ class PersonControllerTest extends TestCase
             'last_page'    => 2,
             'per_page'     => 10,
             'to'           => 15,
-            'total'        => 1,
+            'total'        => 15,
         ]);
     }
 
