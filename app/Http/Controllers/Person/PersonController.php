@@ -9,6 +9,7 @@ use App\Http\Resources\Person\PersonResource;
 use App\Models\Person;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class PersonController extends Controller
 {
@@ -22,30 +23,23 @@ class PersonController extends Controller
         return new PersonResource($person);
     }
 
-    public function store(PersonStoreRequest $request): PersonResource
+    public function store(PersonStoreRequest $request): Response
     {
         $data = Person::query()->create($request->validated());
 
-        return new PersonResource($data);
+        return response(new PersonResource($data), ResponseAlias::HTTP_CREATED);
     }
 
-    public function update(PersonUpdateRequest $request, Person $person): PersonResource
+    public function update(PersonUpdateRequest $request, Person $person): Response
     {
         $person->update($request->validated());
 
-        return new PersonResource($person);
+        return response(new PersonResource($person), ResponseAlias::HTTP_ACCEPTED);
     }
 
     public function destroy(Person $person): Response
     {
         $person->delete();
-
-        return response()->noContent();
-    }
-
-    public function restore(Person $person): Response
-    {
-        $person->restore();
 
         return response()->noContent();
     }

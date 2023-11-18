@@ -26,7 +26,6 @@ Route::controller(PersonController::class)->group(function () {
     ]);
 
     Route::prefix('people')->name('people.')->group(function () {
-        Route::patch('/{person}/restore', [PersonController::class, 'restore'])->name('restore');
         Route::delete('/{person}/force', [PersonController::class, 'forceDestroy'])->name('forceDestroy');
     });
 
