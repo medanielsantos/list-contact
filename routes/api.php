@@ -20,7 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::controller(PersonController::class)->group(function () {
-    Route::apiResources([
-        'people' => PersonController::class,
-    ]);
+
+    Route::prefix('people')->name('people.')->group(function () {
+        Route::apiResources([PersonController::class]);
+        Route::delete('/{person}/force', [PersonController::class, 'forceDestroy'])->name('forceDestroy');
+    });
+
 });

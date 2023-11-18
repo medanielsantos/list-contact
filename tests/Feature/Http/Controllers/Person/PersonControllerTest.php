@@ -12,7 +12,7 @@ class PersonControllerTest extends TestCase
     public const BASE_URL = '/api/people';
 
     /** @test */
-    public function it_should_access_endpoint()
+    public function it_should_access_endpoint(): void
     {
         $response = $this->getJson(self::BASE_URL);
 
@@ -20,7 +20,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_list_of_people()
+    public function it_should_return_list_of_people(): void
     {
         Person::factory()->count(3)->create();
 
@@ -39,7 +39,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_list_of_people_with_contacts()
+    public function it_should_return_list_of_people_with_contacts(): void
     {
         Person::factory()->has(Contact::factory()->count(3))->count(3)->create();
 
@@ -70,7 +70,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_paginate_list_of_people()
+    public function it_should_paginate_list_of_people(): void
     {
         Person::factory()->count(15)->create();
 
@@ -122,7 +122,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_a_person()
+    public function it_should_return_a_person(): void
     {
         $person = Person::factory()->create();
 
@@ -142,7 +142,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_a_person_with_contacts()
+    public function it_should_return_a_person_with_contacts(): void
     {
         $person = Person::factory()->has(Contact::factory()->count(3))->create();
 
@@ -175,7 +175,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_create_a_person()
+    public function it_should_create_a_person(): void
     {
         $person = Person::factory()->make();
 
@@ -196,7 +196,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_update_a_person()
+    public function it_should_update_a_person(): void
     {
         $person = Person::factory()->create([
             'name' => 'Old Name',
@@ -222,7 +222,7 @@ class PersonControllerTest extends TestCase
     }
 
     /** @test */
-    public function it_should_delete_a_person()
+    public function it_should_delete_a_person(): void
     {
         $person = Person::factory()->create();
 
@@ -231,6 +231,20 @@ class PersonControllerTest extends TestCase
         $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
 
         $this->assertSoftDeleted('people', [
+            'id' => $person->id,
+        ]);
+    }
+
+    /** @test */
+    public function it_should_force_delete_a_person(): void
+    {
+        $person = Person::factory()->create();
+
+        $response = $this->deleteJson(self::BASE_URL . "/{$person->id}/force");
+
+        $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseEmpty('people', [
             'id' => $person->id,
         ]);
     }
