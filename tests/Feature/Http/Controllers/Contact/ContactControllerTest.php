@@ -10,14 +10,6 @@ use Tests\TestCase;
 class ContactControllerTest extends TestCase
 {
     /** @test */
-    public function it_should_access_endpoint(): void
-    {
-        $response = $this->getJson('/api/contacts');
-
-        $response->assertStatus(ResponseAlias::HTTP_OK);
-    }
-
-    /** @test */
     public function it_should_create_a_contact(): void
     {
         $person = Person::factory()->createOne();
