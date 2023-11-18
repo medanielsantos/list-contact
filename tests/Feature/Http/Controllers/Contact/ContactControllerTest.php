@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Controllers\Contact;
 
 use App\Models\Contact;
 use App\Models\Person;
-use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\TestCase;
 
@@ -25,8 +24,8 @@ class ContactControllerTest extends TestCase
 
         $response = $this->postJson('/api/contacts', [
             'person_id' => $person->id,
-            'type' => 'email',
-            'value' => 'mail@aol.com',
+            'type'      => 'email',
+            'value'     => 'mail@aol.com',
         ]);
 
         $response->assertStatus(ResponseAlias::HTTP_CREATED);
@@ -36,12 +35,12 @@ class ContactControllerTest extends TestCase
             'person_id',
             'type',
             'value',
-            ]);
+        ]);
 
         $this->assertDatabaseHas('contacts', [
             'person_id' => $person->id,
-            'type' => 'email',
-            'value' => 'mail@aol.com',
+            'type'      => 'email',
+            'value'     => 'mail@aol.com',
         ]);
     }
 
@@ -49,14 +48,14 @@ class ContactControllerTest extends TestCase
     public function it_should_update_a_contact(): void
     {
         $person = Person::factory()->has(Contact::factory([
-            'type' => 'email',
-            'value' => 'old@mail.com'
+            'type'  => 'email',
+            'value' => 'old@mail.com',
         ])->count(1))->createOne();
 
         $response = $this->putJson('/api/contacts/' . $person->contacts->first()->id, [
             'person_id' => $person->id,
-            'type' => 'email',
-            'value' => 'new@mail.com',
+            'type'      => 'email',
+            'value'     => 'new@mail.com',
         ]);
 
         $response->assertStatus(ResponseAlias::HTTP_ACCEPTED);
@@ -66,18 +65,18 @@ class ContactControllerTest extends TestCase
             'person_id',
             'type',
             'value',
-            ]);
+        ]);
 
         $this->assertDatabaseMissing('contacts', [
             'person_id' => $person->id,
-            'type' => 'email',
-            'value' => 'old@mail.com',
+            'type'      => 'email',
+            'value'     => 'old@mail.com',
         ]);
 
         $this->assertDatabaseHas('contacts', [
             'person_id' => $person->id,
-            'type' => 'email',
-            'value' => 'new@mail.com',
+            'type'      => 'email',
+            'value'     => 'new@mail.com',
         ]);
     }
 
