@@ -119,4 +119,57 @@ class PersonControllerTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function it_should_return_a_person()
+    {
+        $person = Person::factory()->create();
+
+        $response = $this->getJson("/api/people/{$person->id}");
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'id'   => $person->id,
+            'name' => $person->name,
+        ]);
+    }
+
+    /** @test */
+    public function it_should_return_a_person_with_contacts()
+    {
+        $person = Person::factory()->has(Contact::factory()->count(3))->create();
+
+        $response = $this->getJson("/api/people/{$person->id}");
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'contacts' => [
+                    '*' => [
+                        'id',
+                        'person_id',
+                        'phone',
+                        'email',
+                        'whatsapp',
+                        'created_at',
+                        'updated_at',
+                        'deleted_at',
+                    ],
+                ],
+            ],
+        ]);
+
+        $response->assertJsonFragment([
+            'id'   => $person->id,
+            'name' => $person->name,
+            'contacts' => $person->contacts->toArray(),
+        ]);
+    }
+
 }
