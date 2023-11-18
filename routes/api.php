@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Person\PersonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,9 +25,17 @@ Route::controller(PersonController::class)->group(function () {
         'people' => PersonController::class,
 
     ]);
-
     Route::prefix('people')->name('people.')->group(function () {
         Route::delete('/{person}/force', [PersonController::class, 'forceDestroy'])->name('forceDestroy');
     });
+});
 
+Route::controller(ContactController::class)->group(function () {
+    Route::apiResources([
+        'contacts' => ContactController::class,
+    ]);
+
+    Route::prefix('contacts')->name('contacts.')->group(function () {
+        Route::delete('/{contact}/force', [ContactController::class, 'forceDestroy'])->name('forceDestroy');
+    });
 });

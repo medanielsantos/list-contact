@@ -10,9 +10,8 @@ return new class () extends Migration {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('person_id')->constrained()->cascadeOnDelete();
-            $table->string('email')->unique();
-            $table->string('phone')->unique()->nullable();
-            $table->string('whatsapp')->unique()->nullable();
+            $table->enum('type', ['phone', 'email', 'whatsapp']);
+            $table->string('value');
             $table->boolean('is_favorite')->default(false);
             $table->timestamps();
             $table->softDeletes();

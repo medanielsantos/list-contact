@@ -54,9 +54,8 @@ class PersonControllerTest extends TestCase
                         '*' => [
                             'id',
                             'person_id',
-                            'phone',
-                            'email',
-                            'whatsapp',
+                            'type',
+                            'value',
                             'created_at',
                             'updated_at',
                             'deleted_at',
@@ -156,9 +155,8 @@ class PersonControllerTest extends TestCase
                     '*' => [
                         'id',
                         'person_id',
-                        'phone',
-                        'email',
-                        'whatsapp',
+                        'type',
+                        'value',
                         'created_at',
                         'updated_at',
                         'deleted_at',
