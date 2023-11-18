@@ -43,6 +43,13 @@ class PersonController extends Controller
         return response()->noContent();
     }
 
+    public function restore(Person $person): Response
+    {
+        $person->restore();
+
+        return response()->noContent();
+    }
+
     public function forceDestroy(Person $person): Response
     {
         $person->forceDelete();
