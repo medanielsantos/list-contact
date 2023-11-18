@@ -98,4 +98,23 @@ class ContactControllerTest extends TestCase
         ]);
 
     }
+
+    /** @test */
+
+    public function it_should_force_delete_a_contact(): void
+    {
+        $person = Person::factory()->has(Contact::factory()->count(1))->createOne();
+
+        $response = $this->deleteJson('/api/contacts/' . $person->contacts->first()->id . '/force');
+
+        $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseMissing('contacts', [
+            'id' => $person->contacts->first()->id,
+        ]);
+
+        $this->assertDatabaseHas('people', [
+            'id' => $person->id,
+        ]);
+    }
 }
