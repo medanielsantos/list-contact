@@ -184,14 +184,9 @@ class PersonControllerTest extends TestCase
         $response->assertStatus(ResponseAlias::HTTP_CREATED);
 
         $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-            ],
-        ]);
-
-        $response->assertJsonFragment([
-            'name' => $person->name,
+            'id',
+            'name',
+            'is_favorite',
         ]);
     }
 
@@ -206,13 +201,11 @@ class PersonControllerTest extends TestCase
             'name' => 'New Name',
         ]);
 
-        $response->assertStatus(ResponseAlias::HTTP_OK);
+        $response->assertStatus(ResponseAlias::HTTP_ACCEPTED);
 
         $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-            ],
+            'id',
+            'name',
         ]);
 
         $response->assertJsonFragment([
