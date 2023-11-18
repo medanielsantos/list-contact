@@ -100,7 +100,6 @@ class ContactControllerTest extends TestCase
     }
 
     /** @test */
-
     public function it_should_force_delete_a_contact(): void
     {
         $person = Person::factory()->has(Contact::factory()->count(1))->createOne();
