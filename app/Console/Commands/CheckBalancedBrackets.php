@@ -6,7 +6,8 @@ use Illuminate\Console\Command;
 
 class CheckBalancedBrackets extends Command
 {
-    protected $signature = 'check:balanced';
+    protected $signature = 'check:balanced-brackets';
+
     protected $description = 'Check if the given string has balanced brackets';
 
     public function handle(): void
@@ -31,7 +32,7 @@ class CheckBalancedBrackets extends Command
 
         do {
             $prevString = $string;
-            $string = str_replace($tokenPairs, '', $string);
+            $string     = str_replace($tokenPairs, '', $string);
         } while ($prevString !== $string);
 
         return empty($string);
