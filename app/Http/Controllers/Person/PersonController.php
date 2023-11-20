@@ -15,7 +15,12 @@ class PersonController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return PersonResource::collection(Person::query()->paginate(10));
+        return PersonResource::collection(
+            Person::query()
+                ->orderBy('is_favorite', 'desc')
+                ->orderBy('name')
+                ->paginate(10)
+        );
     }
 
     public function show(Person $person): PersonResource
@@ -35,6 +40,15 @@ class PersonController extends Controller
         $person->update($request->validated());
 
         return response(new PersonResource($person), ResponseAlias::HTTP_ACCEPTED);
+    }
+
+    public function favorite(Person $person): Response
+    {
+        $person->update([
+            'is_favorite' => !$person->is_favorite,
+        ]);
+
+        return response()->noContent();
     }
 
     public function destroy(Person $person): Response

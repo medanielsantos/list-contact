@@ -11,6 +11,16 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ContactController extends Controller
 {
+    public function index(): Response
+    {
+        return response(ContactResource::collection(Contact::query()->paginate(10)));
+    }
+
+    public function show(Contact $contact): Response
+    {
+        return response(new ContactResource($contact));
+    }
+
     public function store(ContactStoreRequest $request): Response
     {
         $data = Contact::query()->create($request->validated());
@@ -35,6 +45,15 @@ class ContactController extends Controller
     public function forceDestroy(Contact $contact): Response
     {
         $contact->forceDelete();
+
+        return response()->noContent();
+    }
+
+    public function favorite(Contact $contact): Response
+    {
+        $contact->update([
+            'is_favorite' => !$contact->is_favorite,
+        ]);
 
         return response()->noContent();
     }

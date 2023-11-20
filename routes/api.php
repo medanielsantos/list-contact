@@ -22,10 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(PersonController::class)->group(function () {
     Route::apiResources([
-        'people' => PersonController::class,
+        'person' => PersonController::class,
 
     ]);
-    Route::prefix('people')->name('people.')->group(function () {
+    Route::prefix('person')->name('person.')->group(function () {
+        Route::put('/{person}/favorite', [PersonController::class, 'favorite'])->name('favorite');
         Route::delete('/{person}/force', [PersonController::class, 'forceDestroy'])->name('forceDestroy');
     });
 });
@@ -36,6 +37,7 @@ Route::controller(ContactController::class)->group(function () {
     ]);
 
     Route::prefix('contacts')->name('contacts.')->group(function () {
+        Route::put('/{contact}/favorite', [ContactController::class, 'favorite'])->name('favorite');
         Route::delete('/{contact}/force', [ContactController::class, 'forceDestroy'])->name('forceDestroy');
     });
 });

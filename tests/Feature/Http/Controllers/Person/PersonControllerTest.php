@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class PersonControllerTest extends TestCase
 {
-    public const BASE_URL = '/api/people';
+    public const BASE_URL = '/api/person';
 
     /** @test */
     public function it_should_access_endpoint(): void
@@ -169,6 +169,88 @@ class PersonControllerTest extends TestCase
             'id'       => $person->id,
             'name'     => $person->name,
             'contacts' => $person->contacts->toArray(),
+        ]);
+    }
+
+    /** @test */
+    public function it_should_list_person_ordered_by_favorite_and_name(): void
+    {
+
+        Person::factory()->sequence(
+            [
+                'name'        => 'A',
+                'is_favorite' => false,
+            ],
+            [
+                'name'        => 'B',
+                'is_favorite' => false,
+            ],
+            [
+                'name'        => 'C',
+                'is_favorite' => true,
+            ],
+            [
+                'name'        => 'D',
+                'is_favorite' => false,
+            ],
+        )->count(4)->create();
+
+        $response = $this->getJson(self::BASE_URL);
+
+        $response->assertJson([
+            'data' => [
+                [
+                    'name'        => 'C',
+                    'is_favorite' => true,
+                ],
+                [
+                    'name'        => 'A',
+                    'is_favorite' => false,
+                ],
+                [
+                    'name'        => 'B',
+                    'is_favorite' => false,
+                ],
+                [
+                    'name'        => 'D',
+                    'is_favorite' => false,
+                ],
+            ],
+        ]);
+
+    }
+
+    /** @test */
+    public function it_should_define_a_person_as_favorite(): void
+    {
+        $person = Person::factory()->createOne([
+            'is_favorite' => false,
+        ]);
+
+        $response = $this->putJson(self::BASE_URL . "/{$person->id}/favorite");
+
+        $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseHas('people', [
+            'id'          => $person->id,
+            'is_favorite' => true,
+        ]);
+    }
+
+    /** @test */
+    public function it_should_undefined_a_person_as_favorite(): void
+    {
+        $person = Person::factory()->createOne([
+            'is_favorite' => true,
+        ]);
+
+        $response = $this->putJson(self::BASE_URL . "/{$person->id}/favorite");
+
+        $response->assertStatus(ResponseAlias::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseHas('people', [
+            'id'          => $person->id,
+            'is_favorite' => false,
         ]);
     }
 
