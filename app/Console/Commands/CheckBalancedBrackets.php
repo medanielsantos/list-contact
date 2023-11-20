@@ -21,7 +21,6 @@ class CheckBalancedBrackets extends Command
         } else {
             $this->warn('The expression does not have balanced brackets.');
         }
-
     }
 
     private function isBalanced($string): bool
@@ -40,6 +39,6 @@ class CheckBalancedBrackets extends Command
 
     private function removeNonBrackets($string): string
     {
-        return preg_replace("/[^{}\[\]\(\)]/", '', $string);
+        return preg_replace("/[^{}[\]()]/", '', $string);
     }
 }
